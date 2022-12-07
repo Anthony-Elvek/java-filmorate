@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
@@ -16,29 +17,27 @@ import java.util.Map;
 public class UserController {
 
     private final Map<Integer, User> users = new HashMap<>();
-    private int id;
+    private AtomicInteger id = new AtomicInteger();
+
+    public Integer getId(){
+        return id.incrementAndGet();
+    }
 
     @GetMapping
-    public Collection<User> allUsers(){
+    public Collection<User> allUsers() {
         return users.values();
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user){
-        if(user.getName() == null){
-            user.setName(user.getLogin());
-        }
-        user.setId(++id);
+    public User create(@Valid @RequestBody User user) {
+        user.setId(getId());
         users.put(user.getId(), user);
         return user;
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user){
-        if (users.containsKey(user.getId())){
-            if(user.getName() == null){
-                user.setName(user.getLogin());
-            }
+    public User update(@Valid @RequestBody User user) {
+        if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         } else {
             throw new ValidationException("Unknown user");

@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class Film {
     private Integer id;
     @NotBlank(message = "Invalid film name has been entered")

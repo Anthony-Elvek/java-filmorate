@@ -1,11 +1,14 @@
 package ru.yandex.practicum.model;
 
 import lombok.*;
+import ru.yandex.practicum.annotations.UserNameConstraint;
+
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@RequiredArgsConstructor
+@Builder
+@UserNameConstraint
 public class User {
     private Integer id;
     @Email(message = "Invalid user email address has been entered")
