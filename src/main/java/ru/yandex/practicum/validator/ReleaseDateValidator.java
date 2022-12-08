@@ -10,10 +10,10 @@ import java.time.Month;
 
 @Slf4j
 public class ReleaseDateValidator implements ConstraintValidator<ReleaseDateConstraint, LocalDate> {
+    private final LocalDate START_MOVIE_ERA = LocalDate.of(1895, Month.DECEMBER, 28);
     @Override
     public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext){
         log.debug("Validation entered date : {}", date);
-        LocalDate constraint = LocalDate.of(1895, Month.DECEMBER, 28);
-        return date.isAfter(constraint);
+        return date.isAfter(START_MOVIE_ERA);
     }
 }

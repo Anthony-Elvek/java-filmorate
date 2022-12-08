@@ -6,8 +6,10 @@ import ru.yandex.practicum.annotations.ReleaseDateConstraint;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
 public class Film {
     private Integer id;
     @NotBlank(message = "Invalid film name has been entered")
