@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.yandex.practicum.model.User;
-import ru.yandex.practicum.validator.UserNameValidator;
 
 import java.time.LocalDate;
 
@@ -31,8 +30,6 @@ class UserControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @MockBean
-    private UserNameValidator userNameValidator;
     private User user;
     private final LocalDate INVALID_BIRTHDAY_DATE = LocalDate.of(2030, 1, 1);
 
