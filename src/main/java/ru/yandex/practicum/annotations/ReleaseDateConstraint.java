@@ -11,9 +11,8 @@ import javax.validation.Constraint;
 @Constraint(validatedBy = ReleaseDateValidator.class)
 @Documented
 public @interface ReleaseDateConstraint {
+
     String message() default "Invalid film release date has been entered";
-
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }

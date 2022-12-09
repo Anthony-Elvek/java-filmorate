@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class Film {
+
     private Integer id;
     @NotBlank(message = "Invalid film name has been entered")
     private String name;

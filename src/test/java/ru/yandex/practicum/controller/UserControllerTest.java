@@ -33,7 +33,6 @@ class UserControllerTest {
     private User user;
     private final LocalDate INVALID_BIRTHDAY_DATE = LocalDate.of(2030, 1, 1);
 
-
     @BeforeEach
     void init() {
         user = User.builder()

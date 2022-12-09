@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class User {
+
     private Integer id;
     @Email(message = "Invalid user email address has been entered")
     private String email;
