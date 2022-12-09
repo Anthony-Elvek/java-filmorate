@@ -19,7 +19,7 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     private AtomicInteger id = new AtomicInteger();
 
-    public Integer getId() {
+    private Integer getId() {
         return id.incrementAndGet();
     }
 

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.controller;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import ru.yandex.practicum.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.model.Film;
@@ -13,13 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @RestController
 @RequestMapping("/films")
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FilmController {
 
     private final Map<Integer, Film> films = new HashMap<>();
     private AtomicInteger id = new AtomicInteger();
 
-    public Integer getId(){
+    private Integer getId(){
         return id.incrementAndGet();
     }
 
