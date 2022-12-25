@@ -1,10 +1,12 @@
 package ru.yandex.practicum.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import ru.yandex.practicum.annotations.ReleaseDateConstraint;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Film {
 
-    private Integer id;
+    private Long id;
     @NotBlank(message = "Invalid film name has been entered")
     private String name;
     @Size(max = 200, message = "Invalid description film has been entered")
@@ -21,4 +23,6 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Invalid duration film has been entered")
     private Integer duration;
+    @JsonInclude
+    private final Set<Long> likes;
 }

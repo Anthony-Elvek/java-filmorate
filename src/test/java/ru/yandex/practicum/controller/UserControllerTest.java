@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.yandex.practicum.model.User;
+import ru.yandex.practicum.service.UserService;
 
 import java.time.LocalDate;
 
@@ -30,13 +31,15 @@ class UserControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @MockBean
+    private UserService userService;
     private User user;
     private final LocalDate INVALID_BIRTHDAY_DATE = LocalDate.of(2030, 1, 1);
 
     @BeforeEach
     void init() {
         user = User.builder()
-                .id(0)
+                .id(0L)
                 .email("email@mail.ru")
                 .login("Login")
                 .name("Name")
@@ -70,7 +73,7 @@ class UserControllerTest {
     @DisplayName("PUT /users")
     void updateUser() throws Exception {
         user.setName("New Name");
-        user.setId(1);
+        user.setId(1L);
         String body = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(MockMvcRequestBuilders

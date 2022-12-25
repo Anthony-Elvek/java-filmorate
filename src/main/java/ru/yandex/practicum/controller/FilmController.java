@@ -1,45 +1,54 @@
 package ru.yandex.practicum.controller;
 
-import ru.yandex.practicum.exception.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.model.Film;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
 
-    private final Map<Integer, Film> films = new HashMap<>();
-    private AtomicInteger id = new AtomicInteger();
-
-    private Integer getId(){
-        return id.incrementAndGet();
-    }
+    private final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> allFilms() {
-        return films.values();
+    public List<Film> allFilms() {
+        return filmService.allFilms();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        film.setId(getId());
-        films.put(film.getId(), film);
-        return film;
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-        } else {
-            throw new ValidationException("Unknown film");
-        }
-        return film;
+        return filmService.update(film);
+    }
+
+    @GetMapping("/{id}")
+    public Film findById(@PathVariable Long id){
+        return filmService.findById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable Long id, @PathVariable Long userId){
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId){
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> findPopularFilms(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count){
+        return filmService.findPopularFilms(count);
     }
 }

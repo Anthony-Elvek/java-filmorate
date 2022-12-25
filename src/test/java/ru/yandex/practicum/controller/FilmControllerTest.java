@@ -10,12 +10,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.yandex.practicum.model.Film;
+import ru.yandex.practicum.service.FilmService;
+
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,13 +31,17 @@ class FilmControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private FilmService filmService;
+
     private Film film;
     private final LocalDate INVALID_RELEASE_DATE = LocalDate.of(1800, 2, 2);
 
     @BeforeEach
     void init(){
         film = Film.builder()
-                .id(0)
+                .id(0L)
                 .name("Some Film")
                 .description("Some description")
                 .releaseDate(LocalDate.of(2005, 3, 24))
@@ -68,7 +75,7 @@ class FilmControllerTest {
     @DisplayName("PUT /films")
     void updateFilm() throws Exception{
         film.setName("New Film");
-        film.setId(1);
+        film.setId(1L);
         String body = objectMapper.writeValueAsString(film);
 
         mockMvc.perform(MockMvcRequestBuilders
