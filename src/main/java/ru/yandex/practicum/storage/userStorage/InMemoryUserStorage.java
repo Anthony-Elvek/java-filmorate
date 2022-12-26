@@ -1,14 +1,13 @@
 package ru.yandex.practicum.storage.userStorage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -19,9 +18,10 @@ public class InMemoryUserStorage implements UserStorage {
     private Long getId() {
         return id.incrementAndGet();
     }
+
     @Override
     public Collection<User> allUsers() {
-       return users.values();
+        return users.values();
     }
 
     @Override
@@ -41,43 +41,21 @@ public class InMemoryUserStorage implements UserStorage {
         }
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
+        } else {
+            throw new NotFoundException("This user is not found");
         }
         return user;
     }
 
     @Override
-    public User findById(Long userId){
-        return users.get(userId);
-    }
+    public User findById(Long userId) {
+        User user;
 
-    @Override
-    public void addFriend(Long userId, Long friendId) {
-        if(!users.get(userId).getFriends().contains(friendId)){
-            users.get(userId).getFriends().add(friendId);
-            users.get(friendId).getFriends().add(userId);
+        if (users.containsKey(userId)) {
+            user = users.get(userId);
+        } else {
+            throw new NotFoundException(String.format("This user id%d is not found", userId));
         }
-    }
-
-    @Override
-    public void deleteFriend(Long userId, Long friendId) {
-        if(!users.get(userId).getFriends().contains(friendId)){
-            users.get(userId).getFriends().remove(friendId);
-            users.get(friendId).getFriends().remove(userId);
-        }
-    }
-
-    @Override
-    public List<User> findAllFriends(Long userId) {
-        return users.get(userId).getFriends().stream()
-                .map(this::findById)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<User> findCommonFriends(Long userId, Long friendId) {
-        return users.get(userId).getFriends().stream()
-                .filter(id -> users.get(friendId).getFriends().contains(id))
-                .map(this::findById)
-                .collect(Collectors.toList());
+        return user;
     }
 }

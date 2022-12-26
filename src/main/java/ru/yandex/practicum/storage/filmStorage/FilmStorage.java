@@ -2,7 +2,6 @@ package ru.yandex.practicum.storage.filmStorage;
 
 import ru.yandex.practicum.model.Film;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface FilmStorage {
@@ -13,11 +12,4 @@ public interface FilmStorage {
     Film update(Film film);
 
     Film findById(Long filmId);
-
-    void addLike(Long filmId, Long userId);
-
-    void deleteLike(Long filmId, Long userId);
-
-    List<Film> findPopularFilms(int count);
-
 }

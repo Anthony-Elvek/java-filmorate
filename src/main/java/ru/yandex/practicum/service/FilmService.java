@@ -3,13 +3,13 @@ package ru.yandex.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.model.Film;
 import ru.yandex.practicum.model.User;
 import ru.yandex.practicum.storage.filmStorage.FilmStorage;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class FilmService {
             throw new NotFoundException(String.format("This film id%d was not found", filmId));
         }
 
-        return filmStorage.findById(filmId);
+        return film;
     }
 
     public Film create(Film film) {
@@ -39,7 +39,7 @@ public class FilmService {
         film = filmStorage.update(film);
 
         if (Objects.isNull(film)) {
-            throw new NotFoundException("THis film was not found");
+            throw new NotFoundException("This film was not found");
         }
 
         return film;
@@ -55,8 +55,11 @@ public class FilmService {
         if (Objects.isNull(user)) {
             throw new NotFoundException(String.format("This user id%d was not found", userId));
         }
+        if(film.getLikes().contains(userId)){
+            throw new ValidationException("You already like this film before");
+        }
 
-        filmStorage.addLike(filmId, userId);
+        film.getLikes().add(userId);
     }
 
     public void deleteLike(Long filmId, Long userId) {
@@ -70,10 +73,13 @@ public class FilmService {
             throw new NotFoundException(String.format("This user id%d was not found", userId));
         }
 
-        filmStorage.deleteLike(filmId, userId);
+        film.getLikes().remove(userId);
     }
 
     public List<Film> findPopularFilms(Integer count) {
-        return filmStorage.findPopularFilms(count);
+        return filmStorage.allFilms().stream()
+                .sorted(Comparator.comparing(Film::getLikes, (Comparator.comparingInt(Set::size))).reversed())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }

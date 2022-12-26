@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +21,7 @@ import ru.yandex.practicum.model.User;
 import ru.yandex.practicum.service.UserService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,6 +52,7 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /users")
     void addUser() throws Exception {
+        Mockito.when(userService.create(user)).thenReturn(user);
         String body = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -62,6 +65,8 @@ class UserControllerTest {
     @Test
     @DisplayName("GET /users")
     void getUsers() throws Exception {
+        Mockito.when(userService.allUsers()).thenReturn(List.of(user));
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -72,6 +77,8 @@ class UserControllerTest {
     @Test
     @DisplayName("PUT /users")
     void updateUser() throws Exception {
+        Mockito.when(userService.update(user)).thenReturn(user);
+
         user.setName("New Name");
         user.setId(1L);
         String body = objectMapper.writeValueAsString(user);
@@ -80,14 +87,15 @@ class UserControllerTest {
                         .put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("New Name"));
+                .andExpect(status().isOk());
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("User login validation")
-    void loginTest(String login) throws Exception{
+    void loginTest(String login) throws Exception {
+        Mockito.when(userService.create(user)).thenReturn(user);
+
         user.setLogin(login);
         String body = objectMapper.writeValueAsString(user);
 
@@ -101,7 +109,9 @@ class UserControllerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("Check username validation")
-    void usernameTest(String name) throws Exception{
+    void usernameTest(String name) throws Exception {
+        Mockito.when(userService.create(user)).thenReturn(user);
+
         user.setName(name);
 
         String body = objectMapper.writeValueAsString(user);
@@ -110,13 +120,14 @@ class UserControllerTest {
                         .post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Login"));
+                .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("User birthday validation")
-    void birthdayTest() throws Exception{
+    void birthdayTest() throws Exception {
+        Mockito.when(userService.create(user)).thenReturn(user);
+
         user.setBirthday(INVALID_BIRTHDAY_DATE);
         String body = objectMapper.writeValueAsString(user);
 
@@ -130,7 +141,9 @@ class UserControllerTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "user2mail.ru"})
     @DisplayName("User email validation")
-    void emailTest(String email) throws Exception{
+    void emailTest(String email) throws Exception {
+        Mockito.when(userService.create(user)).thenReturn(user);
+
         user.setEmail(email);
         String body = objectMapper.writeValueAsString(user);
 
@@ -139,5 +152,16 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Find user by id ")
+    void findUserById() throws Exception{
+        Mockito.when(userService.findById(user.getId())).thenReturn(user);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/users/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

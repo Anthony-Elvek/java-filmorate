@@ -1,11 +1,11 @@
 package ru.yandex.practicum.storage.filmStorage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Film;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -33,30 +33,22 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film update(Film film) {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
+        } else {
+            throw new NotFoundException("This film is not found");
         }
         return film;
     }
 
     @Override
     public Film findById(Long filmId) {
-        return films.get(filmId);
-    }
+        Film film;
 
-    @Override
-    public void addLike(Long filmId, Long userId) {
-        films.get(filmId).getLikes().add(userId);
-    }
+        if (films.containsKey(filmId)){
+            film = films.get(filmId);
+        } else {
+            throw new NotFoundException(String.format("This film id%d is not found", filmId));
+        }
 
-    @Override
-    public void deleteLike(Long filmId, Long userId) {
-        films.get(filmId).getLikes().remove(userId);
-    }
-
-    @Override
-    public List<Film> findPopularFilms(int count) {
-        return allFilms().stream()
-                .sorted(Comparator.comparing(Film::getLikes, (Comparator.comparingInt(Set::size))).reversed())
-                .limit(count)
-                .collect(Collectors.toList());
+        return film;
     }
 }
