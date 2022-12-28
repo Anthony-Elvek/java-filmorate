@@ -5,14 +5,14 @@ import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Long, User> users = new HashMap<>();
+    private final Map<Long, User> users = new LinkedHashMap<>();
     private AtomicLong id = new AtomicLong();
 
     private Long getId() {
@@ -30,8 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
             user.setName(user.getLogin());
         }
         user.setId(getId());
-        users.put(user.getId(), user);
-        return user;
+        return users.put(user.getId(), user);
     }
 
     @Override

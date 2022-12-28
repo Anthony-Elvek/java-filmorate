@@ -43,7 +43,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film findById(Long filmId) {
         Film film;
 
-        if (films.containsKey(filmId)){
+        if (films.containsKey(filmId)) {
             film = films.get(filmId);
         } else {
             throw new NotFoundException(String.format("This film id%d is not found", filmId));

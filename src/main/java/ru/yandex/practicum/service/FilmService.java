@@ -2,8 +2,6 @@ package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.model.Film;
 import ru.yandex.practicum.model.User;
 import ru.yandex.practicum.storage.filmStorage.FilmStorage;
@@ -22,13 +20,7 @@ public class FilmService {
     }
 
     public Film findById(Long filmId) {
-        final Film film = filmStorage.findById(filmId);
-
-        if (Objects.isNull(film)) {
-            throw new NotFoundException(String.format("This film id%d was not found", filmId));
-        }
-
-        return film;
+        return filmStorage.findById(filmId);
     }
 
     public Film create(Film film) {
@@ -36,44 +28,21 @@ public class FilmService {
     }
 
     public Film update(Film film) {
-        film = filmStorage.update(film);
-
-        if (Objects.isNull(film)) {
-            throw new NotFoundException("This film was not found");
-        }
-
-        return film;
+        return filmStorage.update(film);
     }
 
     public void addLike(Long filmId, Long userId) {
         final Film film = filmStorage.findById(filmId);
         final User user = userService.findById(userId);
 
-        if (Objects.isNull(film)) {
-            throw new NotFoundException(String.format("This film id%d was not found", filmId));
-        }
-        if (Objects.isNull(user)) {
-            throw new NotFoundException(String.format("This user id%d was not found", userId));
-        }
-        if(film.getLikes().contains(userId)){
-            throw new ValidationException("You already like this film before");
-        }
-
-        film.getLikes().add(userId);
+        film.getLikes().add(user.getId());
     }
 
     public void deleteLike(Long filmId, Long userId) {
         final Film film = filmStorage.findById(filmId);
         final User user = userService.findById(userId);
 
-        if (Objects.isNull(film)) {
-            throw new NotFoundException(String.format("This film id%d was not found", filmId));
-        }
-        if (Objects.isNull(user)) {
-            throw new NotFoundException(String.format("This user id%d was not found", userId));
-        }
-
-        film.getLikes().remove(userId);
+        film.getLikes().remove(user.getId());
     }
 
     public List<Film> findPopularFilms(Integer count) {

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -23,5 +24,5 @@ public class User {
     @Past(message = "Invalid user birthday has been entered")
     private LocalDate birthday;
     @JsonInclude
-    private final Set<Long> friends;
+    private final Set<Long> friends = new HashSet<>();
 }

@@ -6,6 +6,7 @@ import ru.yandex.practicum.annotations.ReleaseDateConstraint;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -24,5 +25,5 @@ public class Film {
     @Positive(message = "Invalid duration film has been entered")
     private Integer duration;
     @JsonInclude
-    private final Set<Long> likes;
+    private final Set<Long> likes = new HashSet<>();
 }
