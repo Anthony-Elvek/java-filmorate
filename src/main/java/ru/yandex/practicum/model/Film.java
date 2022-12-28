@@ -13,6 +13,8 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Film {
 
     private Long id;

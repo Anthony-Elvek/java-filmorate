@@ -12,6 +12,8 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class User {
 
     private Long id;
